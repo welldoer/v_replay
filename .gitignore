@@ -1,0 +1,8 @@
+*.tmp.c
+*_test
+*.o
+*.exe
+a.out
+/v
+/v.exe
+
