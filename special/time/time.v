@@ -18,7 +18,7 @@ pub:
 	uni    int // TODO it's safe to use "unix" now
 }
 
-fn asfd() {
+fn remove_me_when_c_bug_is_fixed() { // TODO 
 }
 
 struct C.tm {
@@ -133,6 +133,7 @@ pub fn (t Time) format() string {
 
 const (
 	Months = 'JanFebMarAprMayJunJulAugSepOctNovDec'
+	Days = 'MonTueWedThuFriSatSun'
 )
 
 pub fn (t Time) smonth() string {
@@ -332,3 +333,8 @@ pub fn (t Time) day_of_week() int {
 	return day_of_week(t.year, t.month, t.day)
 }
 
+// weekday_str() returns the current day in string (upto 3 characters)
+pub fn (t Time) weekday_str() string {
+	i := t.day_of_week() - 1
+	return Days.substr(i * 3, (i + 1) * 3)
+}
