@@ -1,10 +1,14 @@
+// Copyright (c) 2019 Alexander Medvednikov. All rights reserved.
+// Use of this source code is governed by an MIT license
+// that can be found in the LICENSE file.
+
 module builtin
 
 struct array {
 	// Using a void pointer allows to implement arrays without generics and without generating
 	// extra code for every type.
-	data         voidptr
 pub:
+	data         voidptr
 	len          int
 	cap          int
 	element_size int

@@ -2,17 +2,16 @@
 // Use of this source code is governed by an MIT license
 // that can be found in the LICENSE file.
 
-module rand
+module sync
 
-#include <time.h>
-// #include <stdlib.h>
-fn seed() {
-	# time_t t;
-	# srand((unsigned) time(&t));
+struct Mutex {
 }
 
-fn next(max int) int {
-	# return  rand() % max;
-	return 0
+fn (m Mutex) lock() {
+panic('not implemented') 
+}
+
+fn (m Mutex) unlock() {
+panic('not implemented') 
 }
 

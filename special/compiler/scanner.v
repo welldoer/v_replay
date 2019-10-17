@@ -1,3 +1,7 @@
+// Copyright (c) 2019 Alexander Medvednikov. All rights reserved.
+// Use of this source code is governed by an MIT license
+// that can be found in the LICENSE file.
+
 module main
 
 struct Scanner {
@@ -26,7 +30,7 @@ const (
 
 fn new_scanner(file_path string) *Scanner {
 	if !os.file_exists(file_path) {
-		panic('"$file_path" doesnt exist')
+		panic('"$file_path" doesn\'t exist')
 	}
 	scanner := &Scanner {
 		file_path: file_path
@@ -302,6 +306,11 @@ fn (s mut Scanner) scan() ScanRes {
 		return scan_res(PIPE, '')
 	case `,`:
 		return scan_res(COMMA, '')
+	case `\r`:
+		if nextc == `\n` {
+			s.pos++
+			return scan_res(NL, '')
+		}
 	case `\n`:
 		return scan_res(NL, '')
 	case `.`:

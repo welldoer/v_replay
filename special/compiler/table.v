@@ -1,3 +1,7 @@
+// Copyright (c) 2019 Alexander Medvednikov. All rights reserved.
+// Use of this source code is governed by an MIT license
+// that can be found in the LICENSE file.
+
 module main
 
 struct Table {
@@ -519,7 +523,7 @@ fn (p mut Parser) satisfies_interface(interface_name, _typ string, throw bool) b
 	for method in int_typ.methods {
 		if !typ.has_method(method.name) {
 			// if throw {
-			p.error('Type "$_typ" doesnt satisfy interface "$interface_name" (method "$method.name" is not implemented)')
+			p.error('Type "$_typ" doesn\'t satisfy interface "$interface_name" (method "$method.name" is not implemented)')
 			// }
 			return false
 		}

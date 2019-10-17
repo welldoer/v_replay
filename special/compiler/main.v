@@ -1,3 +1,7 @@
+// Copyright (c) 2019 Alexander Medvednikov. All rights reserved.
+// Use of this source code is governed by an MIT license
+// that can be found in the LICENSE file.
+
 module main
 
 import os
@@ -21,10 +25,7 @@ enum BuildMode {
 }
 
 fn vtmp_path() string {
-	$if windows {
-		return os.home_dir() + '/.vlang$Version/'
-	}
-	return '/var/tmp/vlang$Version/'
+	return os.home_dir() + '/.vlang$Version/'
 }
 
 const (
@@ -97,17 +98,21 @@ fn main() {
 	}
 	if '-h' in args || '--help' in args || 'help' in args {
 		println(HelpText)
+		return
 	}
+	// TODO quit if the compiler is too old 
 	// u := os.file_last_mod_unix('/var/tmp/alex')
-	// t := time.unixn(u)
-	// println(t.clean())
-	// If there's not tmp path with current version yet, the user must be using a pre-built package
-	// Copy the `vlib` directory to the tmp path.
-	if !os.file_exists(TmpPath) && os.file_exists('vlib') {
+	// Create a temp directory if it's not there. 
+	if !os.file_exists(TmpPath)  { 
 		os.mkdir(TmpPath)
-		os.system2('cp -rf vlib $TmpPath/')
-		// os.system2('cp -rf json $TmpPath/')
+	} 
+	// If there's no tmp path with current version yet, the user must be using a pre-built package
+	// Copy the `vlib` directory to the tmp path.
+/* 
+	// TODO 
+	if !os.file_exists(TmpPath) && os.file_exists('vlib') {
 	}
+*/ 
 	// Just fmt and exit
 	if args.contains('fmt') {
 		file := args.last()
@@ -233,12 +238,12 @@ void init_consts();')
 	// Embed cjson either in embedvlib or in json.o
 	if imports_json && c.build_mode == EMBED_VLIB ||
 	(c.build_mode == BUILD && c.out_name.contains('json.o')) {
-		cgen.genln('#include "json/cJSON/cJSON.c" ')
+		cgen.genln('#include "cJSON.c" ')
 	}
 	// We need the cjson header for all the json decoding user will do in default mode
 	if c.build_mode == DEFAULT_MODE {
 		if imports_json {
-			cgen.genln('#include "json/cJSON/cJSON.h"')
+			cgen.genln('#include "cJSON.h"')
 		}
 	}
 	if c.build_mode == EMBED_VLIB || c.build_mode == DEFAULT_MODE {
@@ -448,6 +453,8 @@ mut args := ''
 	// Output executable name
 	// else {
 	a << '-o $c.out_name'
+	// The C file we are compiling
+	a << '$TmpPath/$c.out_name_c'
 	// }
 	// Min macos version is mandatory I think?
 	if c.os == MAC {
@@ -459,8 +466,6 @@ mut args := ''
 	if c.os == MAC {
 		a << '-x objective-c'
 	}
-	// The C file we are compiling
-	a << '$TmpPath/$c.out_name_c'
 	// Without these libs compilation will fail on Linux
 	if c.os == LINUX && c.build_mode != BUILD {
 		a << '-lm -ldl -lpthread'
@@ -472,7 +477,7 @@ mut args := ''
 		'$fast_clang -I. $args'
 	}
 	else {
-		'clang -I. $args'
+		'cc -I. $args'
 	}
 	// Print the C command
 	if c.show_c_cmd || c.is_verbose {
@@ -512,7 +517,7 @@ fn (c &V) v_files_from_dir(dir string) []string {
 	mut res := []string
 	mut files := os.ls(dir)
 	if !os.file_exists(dir) {
-		panic('$dir doesnt exist')
+		panic('$dir doesn\'t exist')
 	}
 	if c.is_verbose {
 		println('v_files_from_dir ("$dir")')
@@ -832,6 +837,9 @@ v -prod file.v
 
 - To specify the executable\'s name:
 v -o program file.v 
+
+- To execute a program without creating an executable:
+v run file.v
 '
 )
 
