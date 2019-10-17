@@ -4,11 +4,13 @@
 
 module stbi
 
-#include "glad.h"
 import gl
 
+#flag linux -I$HOME/code/v/thirdparty/stb_image
+#flag darwin -I$HOME/code/v/thirdparty/stb_image
+
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "stb_image.h"
 struct Image {
 mut:
 	width       int
@@ -41,7 +43,8 @@ fn load(path string) Image {
 		res.data = C.stbi_load(path.str, &res.width, &res.height, &res.nr_channels, 0)
 	}
 	if isnil(res.data) {
-		exit('stbi cant load')
+		println('stbi cant load')
+		exit(1)
 	}
 	return res
 }

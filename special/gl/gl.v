@@ -13,12 +13,18 @@ import const (
 	GL_DEPTH_TEST
 )
 
+// TODO: windows support
+#flag linux -I$HOME/code/v/thirdparty/glad
+#flag darwin -I$HOME/code/v/thirdparty/glad
+
 #include "glad.h"
 #include "glad.c"
+
 fn init_glad() {
 	ok := C.gladLoadGL()
 	if !ok {
-		os.exit('Failed to initialize glad OpenGL context')
+		println('Failed to initialize glad OpenGL context')
+		exit(1)
 	}
 }
 

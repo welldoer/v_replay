@@ -1,10 +1,12 @@
-# The V Programming Language
+# The V Programming Language 0.0.12
 
 https://vlang.io
 
 Documentation: https://vlang.io/docs
 
 Twitter: https://twitter.com/v_language
+
+Installing V: https://github.com/vlang/v#installing-v-from-source
 
 
 ## Code Structure
@@ -51,20 +53,29 @@ The rest of the directories are vlib modules: `builtin/` (strings, arrays, maps)
 ### Linux and macOS
 
 ```bash
-mkdir -p ~/code && cd ~/code  # ~/code directory has to be used (it's a temporary limitation)
+mkdir ~/code && cd ~/code  # ~/code directory has to be used (it's a temporary limitation)
 git clone https://github.com/vlang/v
 cd v/compiler
+make
+
+# Or build without make:
 wget https://vlang.io/v.c # Download the V compiler's source translated to C
-cc -w -o vc v.c           # Build it with Clang or GCC
-./vc -o v .               # Use the resulting V binary to build V from V source
+cc -std=c11 -w -o vc v.c  # Build it with Clang or GCC
+./vc -o v . && rm vc      # Use the resulting V binary to build V from V source, delete the old compiler
 ```
 
 That's it! Now you have a V executable at `~/code/v/compiler/v`.
 
+Bootstrap the compiler to make sure it works:
+
+```
+./v -o v .
+```
+
 You can create a symlink so that it's globally available:
 
 ```
-sudo ln -s $HOME/code/v/compiler/v /usr/local/bin/v
+sudo ln -s ~/code/v/compiler/v /usr/local/bin/v
 ```
 
 ### Windows
@@ -95,11 +106,11 @@ Now if you want, you can start tinkering with the compiler. If you introduce a b
 
 ```
 v hello_world.v && ./hello_world # or simply
-v run hello_world.v              # This runs the program, but doesn't create the executable
+v run hello_world.v              # This builds the program and runs it right away
 
 v word_counter.v && ./word_counter cinderella.txt
-v news_fetcher.v && ./news_fetcher
-v tetris.v && ./tetris
+v run news_fetcher.v 
+v run tetris.v
 ```
 
 In order to build Tetris and anything else using the graphics module, you will need to install glfw and freetype.
